@@ -9,8 +9,13 @@ import (
 )
 
 type Manager interface {
-	Register(user *model.User)
+	AddUser(user *model.User)
 	Login(username string) model.User
+
+	// 博客操作
+	AddPost(post *model.Post)
+	GetAllPost() []model.Post
+	getPost(pid int) model.Post
 }
 
 type manager struct {
@@ -27,9 +32,10 @@ func init() {
 	}
 	Mgr = &manager{db: db}
 	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Post{})
 }
 
-func (mgr *manager) Register(user *model.User) {
+func (mgr *manager) AddUser(user *model.User) {
 	mgr.db.Create(user)
 }
 
@@ -37,4 +43,19 @@ func (mgr *manager) Login(username string) model.User {
 	var user model.User
 	mgr.db.Where("username=?", username).First(&user)
 	return user
+}
+
+// 博客操作
+func (mgr *manager) AddPost(post *model.Post) {
+	mgr.db.Create(post)
+}
+func (mgr *manager) GetAllPost() []model.Post {
+	var posts = make([]model.Post, 10)
+	mgr.db.Find(&posts)
+	return posts
+}
+func (mgr *manager) getPost(pid int) model.Post {
+	var post model.Post
+	mgr.db.First(&post, pid)
+	return post
 }

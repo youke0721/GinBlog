@@ -17,7 +17,7 @@ func Register(c *gin.Context) {
 		Password: password,
 	}
 
-	dao.Mgr.Register(&user)
+	dao.Mgr.AddUser(&user)
 
 	c.Redirect(301, "/")
 
@@ -46,6 +46,31 @@ func Login(c *gin.Context) {
 		}
 	}
 
+}
+
+func GetPostIndex(c *gin.Context) {
+	posts := dao.Mgr.GetAllPost()
+	c.HTML(200, "postIndex.html", posts)
+}
+
+func AddPost(c *gin.Context) {
+	title := c.PostForm("title")
+	tag := c.PostForm("tag")
+	content := c.PostForm("content")
+
+	post := model.Post{
+		Title:   title,
+		Tag:     tag,
+		Content: content,
+	}
+
+	dao.Mgr.AddPost(&post)
+
+	c.Redirect(302, "/post_index")
+}
+
+func GoAddPost(c *gin.Context) {
+	c.HTML(200, "post.html", nil)
 }
 
 func GoRegister(c *gin.Context) {

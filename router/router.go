@@ -17,5 +17,8 @@ func Start() {
 	e.POST("/register", controller.Register)
 	e.GET("/register", controller.GoRegister)
 	e.GET("/", controller.Index)
+	e.GET("/post_index", controller.GetPostIndex)
+	e.POST("/post", controller.AddPost)
+	e.GET("/post", controller.GoAddPost)
 	e.Run()
 }
