@@ -9,7 +9,8 @@ import (
 )
 
 type Manager interface {
-	AddUser(user *model.User)
+	Register(user *model.User)
+	Login(username string) model.User
 }
 
 type manager struct {
@@ -28,6 +29,12 @@ func init() {
 	db.AutoMigrate(&model.User{})
 }
 
-func (mgr *manager) AddUser(user *model.User) {
+func (mgr *manager) Register(user *model.User) {
 	mgr.db.Create(user)
+}
+
+func (mgr *manager) Login(username string) model.User {
+	var user model.User
+	mgr.db.Where("username=?", username).First(&user)
+	return user
 }
